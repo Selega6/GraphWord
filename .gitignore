@@ -1,0 +1,7 @@
+# Archivos del sistema
+.DS_Store
+# Archivos temporales
+*.log
+# Directorios
+__pycache__/
+venv/
