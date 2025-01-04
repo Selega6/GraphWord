@@ -28,3 +28,13 @@ class S3GraphUploader(GraphUploader):
             )
         except Exception as e:
             print(f"Error uploading graph to S3: {e}")
+            return None
+        return s3_key
+    
+    def eliminate_existing_graph(self, filename):
+        try:
+            self.s3_client.delete_object(Bucket=self.bucket_name, Key=f"{self.folder_name}/{filename}")
+        except Exception as e:
+            print(f"Error deleting graph from S3: {e}")
+            return None
+        return None

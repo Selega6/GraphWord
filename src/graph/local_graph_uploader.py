@@ -17,4 +17,9 @@ class LocalGraphUploader(GraphUploader):
             os.makedirs(self.folder_name)
         except FileExistsError:
             pass
-        
+    
+    def eliminate_existing_graph(self, filename):
+        try:
+            os.remove(f"{self.folder_name}/{filename}")
+        except FileNotFoundError:
+            pass

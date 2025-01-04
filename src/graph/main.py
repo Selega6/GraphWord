@@ -13,7 +13,10 @@ def main():
     graph_uploader = LocalGraphUploader(folder_name="graphs")
     #s3_graph_uploader = S3GraphUploader(s3_bucket, s3_key)
     controller = Controller(data_loader, graph_builder, graph_uploader)
-    controller.execute()
+    existing_graph = "graph.pkl"
+    new_graph = "graph.pkl"
+    controller.execute(existing_graph, new_graph)
+
 
 if __name__ == "__main__":
     main()
