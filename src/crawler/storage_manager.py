@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 
-class GraphBuilder(ABC):
+class BookStorage(ABC):
     @abstractmethod
-    def build_graph(self, books):
+    def upload_book(self, book_id, content):
         pass
-
-
