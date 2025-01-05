@@ -4,10 +4,10 @@ import pickle
 
 
 class LocalGraphLoader(GraphLoader):
+    def __init__(self, folder_name):
+        self.folder_name = folder_name.rstrip('/')
     
-    def load_graph(self, path: str):
-        with open(path, "rb") as f:
-            graph = pickle.load(f)
-        return graph
-    
+    def load_graph(self, filename: str):
+        with open(f"{self.folder_name}/{filename}", "rb") as f:
+            return pickle.load(f)
     
