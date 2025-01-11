@@ -4,14 +4,16 @@ from storage_manager import BookStorage
 
 
 class S3Storage(BookStorage):
-    def __init__(self, bucket_name, region_name="us-east-1", folder_name="downloads", word_count_file="processed/word_counts.txt"):
+    def __init__(self, bucket_name, region_name="us-east-1", folder_name="downloads", word_count_folder="processed"):
         self.bucket_name = bucket_name
         self.s3_client = boto3.client("s3", region_name=region_name)
         self.folder_name = folder_name.rstrip('/')
-        self.word_count_file = word_count_file
+        self.word_count_folder = word_count_folder
+        self.word_count_file = f"{self.word_count_folder}/word_counts.txt"
 
-    def upload_book(self, book_id, content):
-        key = f"{self.folder_name}/pg{book_id}.txt"
+
+    def upload_book(self, book_id, content, count):
+        key = f"{self.folder_name}/pg{count}.txt"
         try:
             self.s3_client.put_object(
                 Bucket=self.bucket_name,
@@ -65,7 +67,6 @@ class S3Storage(BookStorage):
     def delete_output_file(self):
         try:
             self.s3_client.delete_object(Bucket=self.bucket_name, Key=self.word_count_file)
-            print(f"Archivo {self.word_count_file} eliminado de S3 exitosamente.")
         except NoCredentialsError:
             print("No se encontraron credenciales de AWS. Verifica tu configuración.")
         except Exception as e:

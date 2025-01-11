@@ -1,0 +1,7 @@
+boto3
+botocore
+beautifulsoup4
+nltk
+requests
+schedule
+regex

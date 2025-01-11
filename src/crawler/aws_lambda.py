@@ -6,8 +6,8 @@ from s3_storage_manager import S3Storage
 from controller import Controller
 
 def lambda_handler(event, context):
-    bucket_name = os.getenv("BUCKET_NAME", "tu-bucket-s3")
-    download_folder = os.getenv("DOWNLOAD_FOLDER", "downloads")
+    bucket_name = os.getenv("BUCKET_NAME", "graphword-bucket")
+    download_folder = "downloads"
     output_file = os.getenv("OUTPUT_FILE", "processed/word_counts.txt")
 
     try:
@@ -16,9 +16,8 @@ def lambda_handler(event, context):
         book_count = 20
         crawler = Gutenberg_crawler(book_count, s3_storage)
         processor = WordProcessor(
-            bucket_name=bucket_name,
-            input_folder=download_folder,
-            output_file=output_file,
+            s3_bucket=bucket_name,
+            input_dir=download_folder,
             lower_bound=3,
             upper_bound=5
         )
