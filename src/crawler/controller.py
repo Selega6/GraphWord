@@ -1,7 +1,5 @@
 import schedule
 import time
-from gutenberg_crawler import Gutenberg_crawler
-from word_processor import WordProcessor
 
 
 class Controller:

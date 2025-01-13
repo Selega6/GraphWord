@@ -1,5 +1,6 @@
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import unittest
 from unittest.mock import MagicMock, patch
@@ -11,7 +12,7 @@ from src.crawler.local_storage_manager import LocalBookStorage
 
 class TestCrawlerController(unittest.TestCase):
 
-    def setup(self):
+    def setUp(self):
         self.input_dir = "./downloads"
         self.output_file = "./word_counts.txt"
         self.lower_bound = 3

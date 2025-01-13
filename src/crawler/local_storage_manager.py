@@ -1,5 +1,5 @@
 import os
-from storage_manager import BookStorage
+from .storage_manager import BookStorage
 
 class LocalBookStorage(BookStorage):
     def __init__(self, storage_dir="./downloads", output_file="./word_counts.txt"):

@@ -1,9 +1,8 @@
 import requests
 import random
 from bs4 import BeautifulSoup
-from crawler_base import Crawler
-from s3_storage_manager import S3Storage  
-from local_storage_manager import LocalBookStorage
+from .crawler_base import Crawler
+
 
 class Gutenberg_crawler(Crawler):
     BASE_URL = "https://www.gutenberg.org/cache/epub/"
