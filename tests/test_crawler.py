@@ -133,20 +133,62 @@ class TestLocalBookStorage(unittest.TestCase):
             mock_remove.assert_called_once_with("./word_counts.txt")
 
 
+class TestGutenbergCrawler(unittest.TestCase):
+
+    def test_generate_random_book_id(self):
+        """Prueba que generate_random_book_id genera IDs dentro del rango."""
+        crawler = gutenberg_crawler.Gutenberg_crawler()
+        for _ in range(100):
+            book_id = crawler.generate_random_book_id()
+            self.assertGreaterEqual(book_id, crawler.BOOK_ID_RANGE[0])
+            self.assertLessEqual(book_id, crawler.BOOK_ID_RANGE[1])
+
+    @unittest.mock.patch("requests.get")
+    def test_is_english_true(self, mock_get):
+        """Prueba que is_english devuelve True si el libro está en inglés."""
+        mock_response = unittest.mock.Mock()
+        mock_response.text = """
+            <html>
+            <th>Language</th>
+            <td>English</td>
+            </html>
+        """
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        crawler = gutenberg_crawler.Gutenberg_crawler()
+        self.assertTrue(crawler.is_english(123))
+        mock_get.assert_called_once_with(f"{crawler.METADATA_URL}123")
+
+    @unittest.mock.patch("requests.get")
+    @unittest.mock.patch("src.crawler.gutenberg_crawler.Gutenberg_crawler.is_english", return_value=True)
+    def test_download_book_success(self, mock_is_english, mock_get):
+        """Prueba que download_book descarga correctamente si el libro está en inglés."""
+        mock_response = unittest.mock.Mock()
+        mock_response.status_code = 200
+        mock_response.content = "Libro en inglés"
+        mock_get.return_value = mock_response
+
+        storage_mock = unittest.mock.Mock()
+        crawler = gutenberg_crawler.Gutenberg_crawler(storage=storage_mock)
+        result = crawler.download_book(123)
+
+        self.assertTrue(result)
+        mock_get.assert_called_once_with(f"{crawler.BASE_URL}123/pg123.txt", stream=True)
+        storage_mock.upload_book.assert_called_once_with(123, "Libro en inglés")
+
+    @unittest.mock.patch("src.crawler.gutenberg_crawler.Gutenberg_crawler.download_book", side_effect=[True, True, False, True])
+    @unittest.mock.patch("src.crawler.gutenberg_crawler.Gutenberg_crawler.generate_random_book_id", side_effect=[1, 2, 3, 4])
+    def test_download_books(self, mock_generate_random_book_id, mock_download_book):
+        """Prueba que download_books descarga el número correcto de libros."""
+        crawler = gutenberg_crawler.Gutenberg_crawler(book_count=3)
+        crawler.download_books()
+        
+        self.assertEqual(mock_download_book.call_count, 4)
+        self.assertEqual(mock_generate_random_book_id.call_count, 4)  # 4 IDs generados
+
 if __name__ == "__main__":
     unittest.main()
-
-# class TestGutenbergCrawler(unittest.TestCase):
-
-#     def test_fetch_data(self):
-#         crawler = gutenberg_crawler.Gutenberg_crawler()
-#         data = crawler.fetch_data("http://example.com")
-#         self.assertIsInstance(data, str, "fetch_data should return a string of data")
-
-#     def test_fetch_data_invalid_url(self):
-#         crawler = gutenberg_crawler.Gutenberg_crawler()
-#         with self.assertRaises(ValueError):
-#             crawler.fetch_data("invalid_url")
 
 # class TestWordProcessor(unittest.TestCase):
 
