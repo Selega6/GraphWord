@@ -1,5 +1,6 @@
 import os
 import json
+import boto3
 from gutenberg_crawler import Gutenberg_crawler
 from word_processor import WordProcessor
 from s3_storage_manager import S3Storage
@@ -9,6 +10,9 @@ def lambda_handler(event, context):
     bucket_name = os.getenv("BUCKET_NAME", "graphword-bucket")
     download_folder = "downloads"
     output_file = os.getenv("OUTPUT_FILE", "processed/word_counts.txt")
+    queue_url = os.getenv("QUEUE_URL")
+
+    sqs = boto3.client('sqs')
 
     try:
         s3_storage = S3Storage(bucket_name, folder_name=download_folder)
@@ -25,6 +29,14 @@ def lambda_handler(event, context):
         controller = Controller(crawler, processor)
 
         controller.execute()
+
+        sqs.send_message(
+            QueueUrl=queue_url,
+            MessageBody=json.dumps({
+                "status": "completed",
+                "output_file": output_file
+            })
+        )
 
         return {
             "statusCode": 200,

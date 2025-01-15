@@ -1,12 +1,16 @@
 import boto3
 import pickle
 from graph_loader import GraphLoader
-
+import os
 
 class S3GraphLoader(GraphLoader):
     def __init__(self, s3_bucket):
         self.s3_bucket = s3_bucket
-        self.s3_client = boto3.client('s3')
+        self.s3_client = boto3.client('s3',
+                        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID", "test"), 
+                        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY", "test"),
+                        region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+                        endpoint_url=f"http://172.20.0.2:4566")
         self.graph = None 
 
     def load_graph(self, path):
