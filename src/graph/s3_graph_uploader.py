@@ -1,5 +1,5 @@
 import boto3
-from graph_uploader import GraphUploader
+from .graph_uploader import GraphUploader
 import io
 import pickle
 

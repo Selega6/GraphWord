@@ -1,7 +1,5 @@
 import networkx as nx
-import pickle
-from data_loader import DataLoader
-from graph_builder import GraphBuilder
+from .graph_builder import GraphBuilder
 
 
 class NxGraphBuilder(GraphBuilder):
