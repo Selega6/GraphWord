@@ -1,7 +1,7 @@
-from webservice import WebService
+from .webservice import WebService
 import threading
 import time
-from endpoints.nx_graph_path_finder import NxGraphPathFinder
+from .endpoints.nx_graph_path_finder import NxGraphPathFinder
 
 class Controller:
     def __init__(self, graph_filename, graph_loader):
