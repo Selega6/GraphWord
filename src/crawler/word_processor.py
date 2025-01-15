@@ -1,74 +1,61 @@
-import os
-import re
+import boto3
 from collections import Counter
 from nltk.corpus import stopwords
 import nltk
 
-# Descargar los recursos necesarios de NLTK
-nltk.download("stopwords")
+nltk.data.path.append('./nltk_data')
 
 class WordProcessor:
-    def __init__(self, input_dir, output_file, lower_bound=3, upper_bound=5):
-        self.input_dir = input_dir
-        self.output_file = output_file
-        self.stop_words = set(stopwords.words("english"))
+    def __init__(self, input_dir, lower_bound=3, upper_bound=5, s3_bucket="graphword-bucket"):
+        self.input_dir = input_dir.rstrip('/')
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
+        self.s3_bucket = s3_bucket
+
+        self.s3_client = boto3.client("s3")
+
+        self.stopwords = set(stopwords.words("english"))
 
     def process_files(self):
-        if not os.path.exists(self.input_dir):
-            print(f"Input directory '{self.input_dir}' does not exist.")
-            return
+        try:
+            response = self.s3_client.list_objects_v2(Bucket=self.s3_bucket, Prefix=self.input_dir)
 
+            if 'Contents' not in response:
+                print(f"No se encontraron archivos en '{self.s3_bucket}/{self.input_dir}'.")
+                return Counter()
+
+            word_counter = Counter()
+
+            for obj in response['Contents']:
+                file_key = obj['Key']
+                if not file_key.endswith(".txt"):
+                    continue 
+
+                content = self.s3_client.get_object(Bucket=self.s3_bucket, Key=file_key)
+                file_content = content['Body'].read().decode('utf-8')
+
+                word_counter.update(self.process_file_content(file_content))
+
+            return word_counter
+
+        except boto3.exceptions.Boto3Error as e:
+            print(f"Error al acceder a S3: {e}")
+            return Counter()
+        except Exception as e:
+            print(f"Error inesperado al procesar archivos de S3: {e}")
+            return Counter()
+
+    def process_file_content(self, content):
         word_counter = Counter()
-
-        for filename in os.listdir(self.input_dir):
-            if filename.endswith(".txt"):
-                file_path = os.path.join(self.input_dir, filename)
-                if os.path.isfile(file_path):
-                    print(f"Processing file: {file_path}")
-                    word_counter.update(self.process_file(file_path))
+        try:
+            for line in content.splitlines():
+                words = line.strip().split()
+                filtered_words = [
+                    word.lower().strip(".,!?;:\"()[]{}<>")
+                    for word in words
+                    if self.lower_bound <= len(word) <= self.upper_bound and word.lower() not in self.stopwords
+                ]
+                word_counter.update(filtered_words)
+        except Exception as e:
+            print(f"Error al procesar el contenido del archivo: {e}")
         return word_counter
-
-    def process_file(self, file_path):
-        """Extract relevant words from a single file and count their frequency."""
-        text = self.extract_book_content(file_path)
-
-        # Extraer palabras alfabéticas del texto
-        words = re.findall(r"\b[a-zA-Z]+\b", text.lower())
-
-        # Filtrar palabras irrelevantes y por longitud
-        filtered_words = [
-            word for word in words
-            if word not in self.stop_words and self.lower_bound <= len(word) <= self.upper_bound
-        ]
-        return Counter(filtered_words)
-
-    def extract_book_content(self, file_path):
-        """Extract the main content of a Gutenberg book, excluding metadata."""
-        # Expresiones regulares para identificar los marcadores
-        start_marker = re.compile(r"\*\*\* START OF (THE )?PROJECT GUTENBERG EBOOK", re.IGNORECASE)
-        end_marker = re.compile(r"\*\*\* END OF (THE )?PROJECT GUTENBERG EBOOK", re.IGNORECASE)
-        
-        content_lines = []
-        is_in_content = False
-
-        with open(file_path, "r", encoding="utf-8") as file:
-            for line in file:
-                # Buscar el marcador de inicio
-                if start_marker.search(line):
-                    is_in_content = True
-                    print("Start marker found")
-                    continue  # Saltar la línea del marcador
-                
-                # Buscar el marcador de fin
-                if end_marker.search(line):
-                    is_in_content = False
-                    print("End marker found")
-                    break  # Terminar al encontrar el marcador de fin
-                
-                # Agregar líneas dentro del contenido
-                if is_in_content:
-                    content_lines.append(line)
-
-        return "".join(content_lines)
