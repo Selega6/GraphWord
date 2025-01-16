@@ -1,10 +1,9 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import MagicMock
-from src.graph.controller import Controller
+from graph.controller import Controller
 
 class TestController(unittest.TestCase):
     def setUp(self):

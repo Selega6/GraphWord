@@ -1,11 +1,11 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import mock_open, patch, MagicMock
 import pickle
-from src.api.local_graph_loader import LocalGraphLoader
+from api.local_graph_loader import LocalGraphLoader
+
 
 class TestLocalGraphLoader(unittest.TestCase):
     def setUp(self):

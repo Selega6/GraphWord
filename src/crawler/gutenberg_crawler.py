@@ -1,7 +1,10 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import requests
 import random
 from bs4 import BeautifulSoup
-from .crawler_base import Crawler
+from crawler.crawler_base import Crawler
 
 
 class Gutenberg_crawler(Crawler):

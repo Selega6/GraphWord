@@ -1,11 +1,10 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import MagicMock, patch
 import networkx as nx
-from src.graph.nx_graph_builder import NxGraphBuilder
+from graph.nx_graph_builder import NxGraphBuilder
 
 class TestNxGraphBuilder(unittest.TestCase):
     def setUp(self):

@@ -1,11 +1,11 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import MagicMock, patch
 import pickle
-from src.api.s3_graph_loader import S3GraphLoader
+from api.s3_graph_loader import S3GraphLoader
+
 
 class TestS3GraphLoader(unittest.TestCase):
     def setUp(self):

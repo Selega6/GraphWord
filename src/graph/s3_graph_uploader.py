@@ -1,5 +1,8 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import boto3
-from .graph_uploader import GraphUploader
+from graph.graph_uploader import GraphUploader
 import io
 import pickle
 

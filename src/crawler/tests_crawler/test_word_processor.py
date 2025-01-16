@@ -5,12 +5,12 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import MagicMock, patch, mock_open
-from src.crawler import controller
-from src.crawler import gutenberg_crawler
-from src.crawler import storage_manager
-from src.crawler import word_processor
-from src.crawler.local_storage_manager import LocalBookStorage
-from src.crawler.word_processor import WordProcessor
+from crawler import controller
+from crawler import gutenberg_crawler
+from crawler import storage_manager
+from crawler import word_processor
+from crawler.local_storage_manager import LocalBookStorage
+from crawler.word_processor import WordProcessor
 
 
 class TestWordProcessor(unittest.TestCase):

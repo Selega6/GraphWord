@@ -1,10 +1,9 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import patch, mock_open
-from src.crawler.local_storage_manager import LocalBookStorage
+from crawler.local_storage_manager import LocalBookStorage
 
 
 class TestLocalBookStorage(unittest.TestCase):

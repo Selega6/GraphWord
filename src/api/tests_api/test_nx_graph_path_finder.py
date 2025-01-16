@@ -1,11 +1,11 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 import networkx as nx
 from fastapi import HTTPException
-from src.api.endpoints.nx_graph_path_finder import NxGraphPathFinder
+from api.endpoints.nx_graph_path_finder import NxGraphPathFinder
+
 
 class TestNxGraphPathFinder(unittest.TestCase):
     def setUp(self):

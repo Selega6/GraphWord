@@ -1,10 +1,10 @@
-import sys
 import os
-
+import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import MagicMock, patch
-from src.api.controller import Controller
+from api.controller import Controller
+
 
 class TestController(unittest.TestCase):
     def setUp(self):
@@ -13,8 +13,8 @@ class TestController(unittest.TestCase):
         self.mock_webservice = MagicMock()
         self.mock_graph_path_finder = MagicMock()
 
-        patch("src.api.controller.WebService", return_value=self.mock_webservice).start()
-        patch("src.api.controller.NxGraphPathFinder", return_value=self.mock_graph_path_finder).start()
+        patch("api.controller.WebService", return_value=self.mock_webservice).start()
+        patch("api.controller.NxGraphPathFinder", return_value=self.mock_graph_path_finder).start()
 
         self.controller = Controller(graph_filename="test_graph.pkl", graph_loader=self.mock_graph_loader)
 
@@ -35,7 +35,7 @@ class TestController(unittest.TestCase):
         mock_thread.assert_called_once_with(target=self.mock_webservice.run, daemon=True)
         mock_thread.return_value.start.assert_called_once()
 
-    @patch("src.api.controller.Controller.__init__", return_value=None)
+    @patch("api.controller.Controller.__init__", return_value=None)
     @patch("threading.Lock", return_value=MagicMock())
     def test_reload_graph_for_webservice(self, mock_lock, mock_init):
         controller = Controller.__new__(Controller)

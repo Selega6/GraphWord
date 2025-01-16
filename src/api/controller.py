@@ -1,7 +1,10 @@
-from .webservice import WebService
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from api.webservice import WebService
 import threading
 import time
-from .endpoints.nx_graph_path_finder import NxGraphPathFinder
+from api.endpoints.nx_graph_path_finder import NxGraphPathFinder
 
 class Controller:
     def __init__(self, graph_filename, graph_loader):

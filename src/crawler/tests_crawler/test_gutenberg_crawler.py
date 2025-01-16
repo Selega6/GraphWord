@@ -1,10 +1,9 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import MagicMock, patch, mock_open
-from src.crawler import gutenberg_crawler
+from crawler import gutenberg_crawler
 
 
 class TestGutenbergCrawler(unittest.TestCase):
@@ -33,7 +32,7 @@ class TestGutenbergCrawler(unittest.TestCase):
         mock_get.assert_called_once_with(f"{crawler.METADATA_URL}123")
 
     @unittest.mock.patch("requests.get")
-    @unittest.mock.patch("src.crawler.gutenberg_crawler.Gutenberg_crawler.is_english", return_value=True)
+    @unittest.mock.patch("crawler.gutenberg_crawler.Gutenberg_crawler.is_english", return_value=True)
     def test_download_book_success(self, mock_is_english, mock_get):
         mock_response = unittest.mock.Mock()
         mock_response.status_code = 200
@@ -48,8 +47,8 @@ class TestGutenbergCrawler(unittest.TestCase):
         mock_get.assert_called_once_with(f"{crawler.BASE_URL}123/pg123.txt", stream=True)
         storage_mock.upload_book.assert_called_once_with(123, "Libro en inglés")
 
-    @unittest.mock.patch("src.crawler.gutenberg_crawler.Gutenberg_crawler.download_book", side_effect=[True, True, False, True])
-    @unittest.mock.patch("src.crawler.gutenberg_crawler.Gutenberg_crawler.generate_random_book_id", side_effect=[1, 2, 3, 4])
+    @unittest.mock.patch("crawler.gutenberg_crawler.Gutenberg_crawler.download_book", side_effect=[True, True, False, True])
+    @unittest.mock.patch("crawler.gutenberg_crawler.Gutenberg_crawler.generate_random_book_id", side_effect=[1, 2, 3, 4])
     def test_download_books(self, mock_generate_random_book_id, mock_download_book):
         crawler = gutenberg_crawler.Gutenberg_crawler(book_count=3)
         crawler.download_books()

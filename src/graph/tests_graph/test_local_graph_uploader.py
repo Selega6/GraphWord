@@ -1,12 +1,11 @@
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
 import os
 import pickle
-from src.graph.local_graph_uploader import LocalGraphUploader
+from graph.local_graph_uploader import LocalGraphUploader
 
 class TestLocalGraphUploader(unittest.TestCase):
     @patch("os.makedirs")

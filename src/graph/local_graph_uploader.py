@@ -1,6 +1,8 @@
-from .graph_uploader import GraphUploader
-import pickle
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from graph.graph_uploader import GraphUploader
+import pickle
 
 class LocalGraphUploader(GraphUploader):
     def __init__(self, folder_name):
