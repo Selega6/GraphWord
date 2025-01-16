@@ -1,6 +1,6 @@
 import boto3
 import pickle
-from graph_loader import GraphLoader
+from .graph_loader import GraphLoader
 
 
 class S3GraphLoader(GraphLoader):

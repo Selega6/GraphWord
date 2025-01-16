@@ -1,5 +1,4 @@
-from graph_loader import GraphLoader
-
+from .graph_loader import GraphLoader
 import pickle
 
 
@@ -10,4 +9,3 @@ class LocalGraphLoader(GraphLoader):
     def load_graph(self, filename: str):
         with open(f"{self.folder_name}/{filename}", "rb") as f:
             return pickle.load(f)
-    
