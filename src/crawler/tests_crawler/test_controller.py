@@ -68,6 +68,3 @@ class TestCrawlerController(unittest.TestCase):
         instance.execute_schedule()
 
         instance.schedule_downloads.assert_called_once()
-
-if __name__ == '__main__':
-    unittest.main()

@@ -16,11 +16,12 @@ class TestLocalBookStorage(unittest.TestCase):
     def test_upload_book(self):
         book_id = 123
         content = b"Contenido del libro"
-        file_path = "./downloads/pg123.txt"
+        count = 0
+        file_path = "./downloads/pg0.txt"
 
         with patch("builtins.open", mock_open()) as mock_open_file:
             storage = LocalBookStorage(storage_dir="./downloads")
-            storage.upload_book(book_id, content)
+            storage.upload_book(book_id, content, count)
 
             mock_open_file.assert_called_once_with(file_path, "wb")
             mock_open_file().write.assert_called_once_with(content)
@@ -59,6 +60,3 @@ class TestLocalBookStorage(unittest.TestCase):
             storage.delete_output_file()
 
             mock_remove.assert_called_once_with("./word_counts.txt")
-
-if __name__ == '__main__':
-    unittest.main()
