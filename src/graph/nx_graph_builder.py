@@ -1,7 +1,8 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import networkx as nx
-import pickle
-from data_loader import DataLoader
-from graph_builder import GraphBuilder
+from graph.graph_builder import GraphBuilder
 
 
 class NxGraphBuilder(GraphBuilder):
