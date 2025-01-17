@@ -1,7 +1,10 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import boto3
 import pickle
-from graph_loader import GraphLoader
-import os
+from api.graph_loader import GraphLoader
+
 
 class S3GraphLoader(GraphLoader):
     def __init__(self, s3_bucket):

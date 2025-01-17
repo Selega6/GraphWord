@@ -1,5 +1,8 @@
 import os
-from storage_manager import BookStorage
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+import os
+from crawler.storage_manager import BookStorage
 
 class LocalBookStorage(BookStorage):
     def __init__(self, storage_dir="./downloads", output_file="./word_counts.txt"):
