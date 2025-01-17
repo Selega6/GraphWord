@@ -1,74 +1,122 @@
-name: CD - Deploy to LocalStack
-
-on:
+:
   push:
     branches:
       - main
   workflow_dispatch:
 
+name: CD - Deploy to LocalStack
+
+on:
+  push:
+    branches:
+     jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+ - main
+  workflow_dispatch:
+
 jobs:
   deploy:
-    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses:    runs-on: ubuntu-latest
 
     services:
       docker:
-        image: docker:20.10.7
-        options: --privileged
+ actions/checkout@v3
+
+      - name: Install Dependencies (Terraform, AWS CLI)
+        run: |
+          sudo apt-get        image: docker:20.10.7
+        options: -- update && sudo apt-get install -y unzip python3-pprivileged
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repositoryip
+          curl -LO https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
+         
         uses: actions/checkout@v3
 
       - name: Install Dependencies (Terraform, AWS CLI)
         run: |
-          choco install terraform unzip -y
-          $env:PATH += ";C:\ProgramData\chocolatey\bin"
-          pip install localstack-client awscli
+          unzip terraform_1.5.7_linux_amd64.zip
+          sudo mv terraform sudo apt-get update && sudo apt-get install - /usr/local/bin/
+          pip install localstacky unzip python3-pip
+          curl -LO https://releases-client awscli
 
       - name: Verify Terraform Installation
-        run: |
-          C:\ProgramData\chocolatey\bin\terraform.exe -version
+        run: terraform -version
 
-      - name: Run LocalStack in Docker
+      - name.hashicorp.com/terraform/1.5.7/terraform_1.5.: Run LocalStack in Docker
         run: |
-          docker run -d --name localstack-container ^
-            -p 4566:4566 -p 4510-4559:4510-4559 ^
-            -v //var/run/docker.sock:/var/run/docker.sock ^
-            localstack/localstack
-          timeout /t 30
+          docker7_linux_amd64.zip
+          unzip terraform_1 run -d --name localstack-container \
+            -p.5.7_linux_amd64.zip
+          sudo mv terraform /usr/local/bin 4566:4566 -p 4510-4559:4510-4559 \
+            -/
+          pip install localstack-client awscli
 
-      - name: Initialize Terraform
+     v /var/run/docker.sock:/var/run/docker.sock \
+            local - name: Verify Terraform Installation
+        runstack/localstack
+          sleep 30
+
+      - name:: terraform -version
+
+      - name: Run LocalStack in Initialize Terraform
         run: |
-          $env:AWS_ACCESS_KEY_ID="test"
-          $env:AWS_SECRET_ACCESS_KEY="test"
-          $env:AWS_DEFAULT_REGION="us-east-1"
-          C:\ProgramData\chocolatey\bin\terraform.exe init
+          Docker
+        run: |
+          docker run -d --name export AWS_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESS localstack-container \
+            -p 4566:4566_KEY="test"
+          export AWS_DEFAULT_REGION="us-east-1"
+          terraform init
 
       - name: Terraform Apply
         run: |
-          $env:AWS_ACCESS_KEY_ID="test"
-          $env:AWS_SECRET_ACCESS_KEY="test"
-          $env:AWS_DEFAULT_REGION="us-east-1"
-          C:\ProgramData\chocolatey\bin\terraform.exe apply -var-file="envs/prod.tfvars" -auto-approve
+          export AWS -p 4510-4559:4510-4559 \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            localstack_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESS_KEY="test"
+          export AWS_DEFAULT_REGION="us/localstack
+          sleep 30
 
-      - name: Verify S3 Bucket in LocalStack
+      - name: Initialize Terraform
         run: |
-          awslocal s3 ls || echo "Failed to list S3 buckets."
+          export AWS-east-1"
+          terraform apply -var-file="env_ACCESS_KEY_ID="test"
+          export AWS_SECRET_ACCESSs/prod.tfvars" -auto-approve
 
-      - name: Terraform Destroy
+      - name: Verify S3_KEY="test"
+          export AWS_DEFAULT_REGION=" Bucket in LocalStack
+        run: |
+          awslus-east-1"
+          terraform init
+
+      - name:ocal s3 ls || echo "Failed to list S3 buckets."
+
+      - Terraform Apply
+        run: |
+          export AWS_ACCESS name: Terraform Destroy
         if: always()
-        run: |
-          $env:AWS_ACCESS_KEY_ID="test"
-          $env:AWS_SECRET_ACCESS_KEY="test"
-          $env:AWS_DEFAULT_REGION="us-east-1"
-          C:\ProgramData\chocolatey\bin\terraform.exe destroy -var-file="envs/prod.tfvars" -auto-approve
+       _KEY_ID="test"
+          export AWS_SECRET_ACCESS_KEY run: |
+          export AWS_ACCESS_KEY_ID="test="test"
+          export AWS_DEFAULT_REGION="us-east"
+          export AWS_SECRET_ACCESS_KEY="test"
+         -1"
+          terraform apply -var-file="envs/pro export AWS_DEFAULT_REGION="us-east-1"
+          terraform destroy -var-file="envs/prod.tfvarsd.tfvars" -auto-approve
+
+      - name: Verify S3" -auto-approve
 
       - name: Stop LocalStack
-        if: always()
+        Bucket in LocalStack
+        run: awslocal s3 ls || echo "Failed if: always()
         run: |
-          if (docker ps -a --format "{{.Names}}" | Select-String -Pattern "localstack-container") {
-            docker stop localstack-container
-            docker rm localstack-container
-          } else {
-            Write-Output "LocalStack container does not exist."
-          }
+          docker stop to list S3 buckets."
+
+      - name: localstack-container && docker rm localstack-container Terraform Destroy
+        if: always()
+        run:
