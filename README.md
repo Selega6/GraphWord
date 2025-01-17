@@ -20,7 +20,7 @@ To clean up and destroy the infrastructure, run:
 - tflocal destroy -var-file="envs/prod.tfvars" -auto-approve
 
 ### Important Notes
-Since the project uses the LocalStack Community Docker image, a simulated EC2 instance was created. This EC2 instance is currently designed to run on Windows.
+Since the project utilizes the LocalStack Community Docker image, a simulated EC2 instance was created. However, this instance is currently configured to run on Windows, which prevents the Continuous Deployment (CD) workflow from executing. This issue arises because Docker is not fully supported on Windows runners in GitHub Actions, making it incompatible with the current setup.
 
 ### Documentation
 For more information, refer to the documentation located in the /docs folder.
