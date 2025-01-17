@@ -22,11 +22,12 @@ jobs:
       - name: Install Dependencies (Terraform, AWS CLI)
         run: |
           choco install terraform unzip -y
+          $env:PATH += ";C:\ProgramData\chocolatey\bin"
           pip install localstack-client awscli
 
       - name: Verify Terraform Installation
         run: |
-          terraform -version
+          C:\ProgramData\chocolatey\bin\terraform.exe -version
 
       - name: Run LocalStack in Docker
         run: |
@@ -41,14 +42,14 @@ jobs:
           $env:AWS_ACCESS_KEY_ID="test"
           $env:AWS_SECRET_ACCESS_KEY="test"
           $env:AWS_DEFAULT_REGION="us-east-1"
-          terraform init
+          C:\ProgramData\chocolatey\bin\terraform.exe init
 
       - name: Terraform Apply
         run: |
           $env:AWS_ACCESS_KEY_ID="test"
           $env:AWS_SECRET_ACCESS_KEY="test"
           $env:AWS_DEFAULT_REGION="us-east-1"
-          terraform apply -var-file="envs/prod.tfvars" -auto-approve
+          C:\ProgramData\chocolatey\bin\terraform.exe apply -var-file="envs/prod.tfvars" -auto-approve
 
       - name: Verify S3 Bucket in LocalStack
         run: |
@@ -60,7 +61,7 @@ jobs:
           $env:AWS_ACCESS_KEY_ID="test"
           $env:AWS_SECRET_ACCESS_KEY="test"
           $env:AWS_DEFAULT_REGION="us-east-1"
-          terraform destroy -var-file="envs/prod.tfvars" -auto-approve
+          C:\ProgramData\chocolatey\bin\terraform.exe destroy -var-file="envs/prod.tfvars" -auto-approve
 
       - name: Stop LocalStack
         if: always()
