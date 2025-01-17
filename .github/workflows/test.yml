@@ -29,6 +29,10 @@ jobs:
         pip install -r src/graph/requirements.txt
         pip install -r src/api/requirements.txt
 
+    - name: Download NLTK data
+      run: |
+        python -m nltk.downloader stopwords
+
     - name: Run tests for crawler
       run: |
         python -m unittest discover -s src/crawler/tests_crawler
