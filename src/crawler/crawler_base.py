@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class Crawler(ABC):
     @abstractmethod
-    def download_book(self, book_id):
+    def download_book(self, book_id, count):
         pass
 
     @abstractmethod

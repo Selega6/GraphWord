@@ -11,8 +11,8 @@ class LocalBookStorage(BookStorage):
             os.makedirs(self.storage_dir)
         self.output_file = output_file
 
-    def upload_book(self, book_id, content):
-        file_path = os.path.join(self.storage_dir, f"pg{book_id}.txt")
+    def upload_book(self, book_id, content, count):
+        file_path = os.path.join(self.storage_dir, f"pg{count}.txt")
         try:
             with open(file_path, "wb") as file:
                 file.write(content)

@@ -16,21 +16,33 @@ class NxGraphPathFinder:
         except nx.NodeNotFound as e:
             raise HTTPException(status_code=404, detail=f"Node not found: {e}")
 
-    def all_paths(self, start, end):
+    def all_paths(self, start, end, max_paths=100, cutoff=10):
         if self.graph is None:
             raise HTTPException(status_code=500, detail="Graph is not loaded.")
         try:
-            paths = list(nx.all_simple_paths(self.graph, source=start, target=end))
-            return {"all_paths": paths}
+            paths_generator = nx.all_simple_paths(self.graph, source=start, target=end, cutoff=cutoff)
+            paths = []
+            for i, path in enumerate(paths_generator):
+                if i >= max_paths:
+                    break
+                paths.append(path)
+            return {"all_paths": paths, "note": f"Limited to {max_paths} paths with a cutoff of {cutoff}."}
         except nx.NodeNotFound as e:
             raise HTTPException(status_code=404, detail=f"Node not found: {e}")
-  
-    def longest_path(self):
+
+    def longest_path(self, cutoff=20):
         if self.graph is None:
             raise HTTPException(status_code=500, detail="Graph is not loaded.")
         try:
-            longest_path = max(nx.all_simple_paths(self.graph), key=len)
-            return {"longest_path": longest_path}
+            longest_path = []
+            for source in self.graph.nodes:
+                for target in self.graph.nodes:
+                    if source != target:
+                        paths = nx.all_simple_paths(self.graph, source=source, target=target, cutoff=cutoff)
+                        for path in paths:
+                            if len(path) > len(longest_path):
+                                longest_path = path
+            return {"longest_path": longest_path, "note": f"Search limited to paths with a cutoff of {cutoff}."}
         except ValueError:
             raise HTTPException(status_code=404, detail="No valid path found in the graph.")
 
@@ -60,4 +72,4 @@ class NxGraphPathFinder:
         if self.graph is None:
             raise HTTPException(status_code=500, detail="Graph is not loaded.")
         isolates = list(nx.isolates(self.graph))
-        return {"isolated_nodes": isolates} 
+        return {"isolated_nodes": isolates}
