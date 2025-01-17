@@ -19,13 +19,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Dependencies (Terraform, tflocal, AWS CLI)
+      - name: Install Dependencies (Terraform, AWS CLI)
         run: |
           choco install unzip -y
           curl -LO https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_windows_amd64.zip
           tar -xf terraform_1.5.7_windows_amd64.zip
           move terraform.exe C:\windows\system32\
-          pip install localstack-client awscli terraform-local
+          pip install localstack-client awscli
 
       - name: Run LocalStack in Docker
         run: |
@@ -37,11 +37,11 @@ jobs:
 
       - name: Initialize Terraform
         run: |
-          tflocal init
+          AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform init
 
       - name: Terraform Apply
         run: |
-          tflocal apply -var-file="envs/prod.tfvars" -auto-approve
+          AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform apply -var-file="envs/prod.tfvars" -auto-approve
 
       - name: Verify S3 Bucket in LocalStack
         run: |
@@ -50,7 +50,7 @@ jobs:
       - name: Terraform Destroy
         if: always()
         run: |
-          tflocal destroy -var-file="envs/prod.tfvars" -auto-approve
+          AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform destroy -var-file="envs/prod.tfvars" -auto-approve
 
       - name: Stop LocalStack
         if: always()
