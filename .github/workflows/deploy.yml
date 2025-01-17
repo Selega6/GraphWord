@@ -55,4 +55,9 @@ jobs:
       - name: Stop LocalStack
         if: always()
         run: |
-          docker stop localstack-container && docker rm localstack-container
+          if docker ps -a -q -f name=localstack-container; then ^
+            docker stop localstack-container ^
+            && docker rm localstack-container; ^
+          else ^
+            echo "LocalStack container does not exist." ^
+          fi
