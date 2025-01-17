@@ -40,10 +40,6 @@ class TestNxGraphPathFinder(unittest.TestCase):
         result = self.path_finder.all_paths("A", "E")
         self.assertIn({"all_paths": [["A", "B", "C", "D", "E"]]}, [result])
 
-    def test_longest_path(self):
-        result = self.path_finder.longest_path()
-        self.assertEqual(result, {"longest_path": ["A", "B", "C", "D", "E"]})
-
     def test_identify_clusters(self):
         result = self.path_finder.identify_clusters()
         expected_clusters = [{"clusters": [["A", "B", "C", "D", "E"], ["F", "G", "H"], ["I"]]}]

@@ -29,12 +29,8 @@ class NxGraphPathFinder:
         if self.graph is None:
             raise HTTPException(status_code=500, detail="Graph is not loaded.")
         try:
-            all_longest_paths = max(
-                (path for source in self.graph for target in self.graph 
-                if source != target for path in nx.all_simple_paths(self.graph, source=source, target=target)),
-                key=len
-            )
-            return {"longest_path": all_longest_paths}
+            longest_path = max(nx.all_simple_paths(self.graph), key=len)
+            return {"longest_path": longest_path}
         except ValueError:
             raise HTTPException(status_code=404, detail="No valid path found in the graph.")
 
