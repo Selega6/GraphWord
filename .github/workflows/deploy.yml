@@ -37,11 +37,17 @@ jobs:
 
       - name: Initialize Terraform
         run: |
-          AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform init
+          $env:AWS_ACCESS_KEY_ID="test"
+          $env:AWS_SECRET_ACCESS_KEY="test"
+          $env:AWS_DEFAULT_REGION="us-east-1"
+          terraform init
 
       - name: Terraform Apply
         run: |
-          AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform apply -var-file="envs/prod.tfvars" -auto-approve
+          $env:AWS_ACCESS_KEY_ID="test"
+          $env:AWS_SECRET_ACCESS_KEY="test"
+          $env:AWS_DEFAULT_REGION="us-east-1"
+          terraform apply -var-file="envs/prod.tfvars" -auto-approve
 
       - name: Verify S3 Bucket in LocalStack
         run: |
@@ -50,7 +56,10 @@ jobs:
       - name: Terraform Destroy
         if: always()
         run: |
-          AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform destroy -var-file="envs/prod.tfvars" -auto-approve
+          $env:AWS_ACCESS_KEY_ID="test"
+          $env:AWS_SECRET_ACCESS_KEY="test"
+          $env:AWS_DEFAULT_REGION="us-east-1"
+          terraform destroy -var-file="envs/prod.tfvars" -auto-approve
 
       - name: Stop LocalStack
         if: always()
