@@ -1,27 +1,31 @@
 from collections import Counter
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import unittest
-from unittest.mock import MagicMock, patch, mock_open
-from crawler import controller
-from crawler import gutenberg_crawler
-from crawler import storage_manager
-from crawler import word_processor
-from crawler.local_storage_manager import LocalBookStorage
+from unittest.mock import patch, MagicMock
+from collections import Counter
 from crawler.word_processor import WordProcessor
 
 
 class TestWordProcessor(unittest.TestCase):
+    def setUp(self):
+        self.processor = WordProcessor(input_dir="test_dir", lower_bound=3, upper_bound=5, s3_bucket="test-bucket")
 
     def test_initialization(self):
-        processor = WordProcessor(input_dir="./input", output_file="./output.txt", lower_bound=4, upper_bound=8)
-        self.assertEqual(processor.input_dir, "./input")
-        self.assertEqual(processor.output_file, "./output.txt")
-        self.assertEqual(processor.lower_bound, 4)
-        self.assertEqual(processor.upper_bound, 8)
-        self.assertIn("the", processor.stop_words)
+        self.assertEqual(self.processor.input_dir, "test_dir")
+        self.assertEqual(self.processor.lower_bound, 3)
+        self.assertEqual(self.processor.upper_bound, 5)
+        self.assertEqual(self.processor.s3_bucket, "test-bucket")
+        self.assertTrue(len(self.processor.stopwords) > 0)
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_process_file_content_with_stopwords(self):
+        content = "the word1 is a word2"
+        result = self.processor.process_file_content(content)
+        expected = Counter({"word1": 1, "word2": 1})
+        self.assertEqual(result, expected)
+
+    def test_process_file_content_empty_file(self):
+        content = ""
+        result = self.processor.process_file_content(content)
+        self.assertEqual(result, Counter())

@@ -31,21 +31,24 @@ class TestGutenbergCrawler(unittest.TestCase):
         self.assertTrue(crawler.is_english(123))
         mock_get.assert_called_once_with(f"{crawler.METADATA_URL}123")
 
-    @unittest.mock.patch("requests.get")
-    @unittest.mock.patch("crawler.gutenberg_crawler.Gutenberg_crawler.is_english", return_value=True)
-    def test_download_book_success(self, mock_is_english, mock_get):
-        mock_response = unittest.mock.Mock()
+    @patch("crawler.gutenberg_crawler.requests.get")
+    @patch("crawler.gutenberg_crawler.Gutenberg_crawler.is_english", return_value=True)
+    def test_download_book_success(self, mock_is_english, mock_requests_get):
+        """Prueba que download_book descarga un libro con éxito."""
+        mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.content = "Libro en inglés"
-        mock_get.return_value = mock_response
+        mock_response.content = b"Sample book content"
+        mock_requests_get.return_value = mock_response
 
-        storage_mock = unittest.mock.Mock()
-        crawler = gutenberg_crawler.Gutenberg_crawler(storage=storage_mock)
-        result = crawler.download_book(123)
+        mock_storage = MagicMock()
+        crawler = gutenberg_crawler.Gutenberg_crawler(book_count=1, storage=mock_storage)
+
+        result = crawler.download_book(123, 0)  # Ahora pasamos 'count' como segundo argumento
 
         self.assertTrue(result)
-        mock_get.assert_called_once_with(f"{crawler.BASE_URL}123/pg123.txt", stream=True)
-        storage_mock.upload_book.assert_called_once_with(123, "Libro en inglés")
+        mock_is_english.assert_called_once_with(123)
+        mock_requests_get.assert_called_once_with("https://www.gutenberg.org/cache/epub/123/pg123.txt", stream=True)
+        mock_storage.upload_book.assert_called_once_with(123, b"Sample book content", 0)
 
     @unittest.mock.patch("crawler.gutenberg_crawler.Gutenberg_crawler.download_book", side_effect=[True, True, False, True])
     @unittest.mock.patch("crawler.gutenberg_crawler.Gutenberg_crawler.generate_random_book_id", side_effect=[1, 2, 3, 4])
@@ -55,6 +58,3 @@ class TestGutenbergCrawler(unittest.TestCase):
         
         self.assertEqual(mock_download_book.call_count, 4)
         self.assertEqual(mock_generate_random_book_id.call_count, 4)
-
-if __name__ == "__main__":
-    unittest.main()
