@@ -1,14 +1,14 @@
 name: CD - Deploy to LocalStack
 
 on:
-    push:
-      branches:
-        - main
-    workflow_dispatch: 
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     services:
       docker:
@@ -21,21 +21,19 @@ jobs:
 
       - name: Install Dependencies (Terraform, tflocal, AWS CLI)
         run: |
-            sudo apt-get update && sudo apt-get install -y unzip python3-pip
-            curl -LO https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
-            unzip terraform_1.5.7_linux_amd64.zip
-            sudo mv terraform /usr/local/bin/
-            pip install localstack-client awscli
-            echo "alias tflocal='AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform'" >> ~/.bashrc
-            source ~/.bashrc
+          choco install unzip -y
+          curl -LO https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_windows_amd64.zip
+          tar -xf terraform_1.5.7_windows_amd64.zip
+          move terraform.exe C:\windows\system32\
+          pip install localstack-client awscli terraform-local
 
       - name: Run LocalStack in Docker
         run: |
-          docker run -d --name localstack-container \
-            -p 4566:4566 -p 4510-4559:4510-4559 \
-            -v /var/run/docker.sock:/var/run/docker.sock \
+          docker run -d --name localstack-container ^
+            -p 4566:4566 -p 4510-4559:4510-4559 ^
+            -v //var/run/docker.sock:/var/run/docker.sock ^
             localstack/localstack
-          sleep 30
+          timeout /t 30
 
       - name: Initialize Terraform
         run: |
