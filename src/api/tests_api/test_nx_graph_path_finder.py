@@ -37,8 +37,12 @@ class TestNxGraphPathFinder(unittest.TestCase):
         self.assertEqual(context.exception.detail, "Node not found: Either source A or target Z is not in G")
 
     def test_all_paths(self):
-        result = self.path_finder.all_paths("A", "E")
-        self.assertIn({"all_paths": [["A", "B", "C", "D", "E"]]}, [result])
+        response = self.path_finder.all_paths("A", "E")
+        expected_response = {
+            "all_paths": [["A", "B", "C", "D", "E"]],
+            "note": "Limited to 100 paths with a cutoff of 10."
+        }
+        self.assertEqual(response, expected_response)
 
     def test_identify_clusters(self):
         result = self.path_finder.identify_clusters()
