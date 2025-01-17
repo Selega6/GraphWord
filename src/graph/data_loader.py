@@ -21,7 +21,7 @@ class DataLoader:
                 if len(parts) == 2:
                     word, count = parts
                 else:
-                    print(f"Línea inválida: {line}")
+                    print(f"Invalid line: {line}")
                     continue
                 words_with_counts[word] = int(count)
         return words_with_counts

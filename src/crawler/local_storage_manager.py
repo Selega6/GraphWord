@@ -17,7 +17,7 @@ class LocalBookStorage(BookStorage):
             with open(file_path, "wb") as file:
                 file.write(content)
         except Exception as e:
-            print(f"Error al guardar el libro pg{book_id} localmente: {e}")
+            print(f"Error saving the book pg{book_id} locally: {e}")
 
     def delete_all_books(self):
         try:
@@ -25,10 +25,9 @@ class LocalBookStorage(BookStorage):
                 file_path = os.path.join(self.storage_dir, file_name)
                 os.remove(file_path)
         except Exception as e:
-            print(f"Error al eliminar libros locales: {e}")
+            print(f"Error deleting local books: {e}")
 
     def upload_word_counts(self, word_counter):
-        """Save the word counts to a .txt file."""
         with open(self.output_file, "w", encoding="utf-8") as file:
             for word, count in word_counter.items():
                 file.write(f"{word} {count}\n")
@@ -38,4 +37,4 @@ class LocalBookStorage(BookStorage):
         try:
             os.remove(self.output_file)
         except Exception as e:
-            print(f"Error al eliminar el archivo de conteo de palabras: {e}")
+            print(f"Error deleting the word count file: {e}")

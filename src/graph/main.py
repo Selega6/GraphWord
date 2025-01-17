@@ -11,7 +11,6 @@ def main():
     data_loader = DataLoader(words_with_counts_file, s3_bucket, s3_key)
     graph_builder = NxGraphBuilder(data_loader=data_loader)
     graph_uploader = LocalGraphUploader(folder_name="graphs")
-    #s3_graph_uploader = S3GraphUploader(s3_bucket, s3_key)
     controller = Controller(data_loader, graph_builder, graph_uploader)
     existing_graph = "graph.pkl"
     new_graph = "graph.pkl"

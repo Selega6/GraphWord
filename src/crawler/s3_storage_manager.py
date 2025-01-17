@@ -22,9 +22,9 @@ class S3Storage(BookStorage):
                 ContentType="text/plain"
             )
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al subir el libro pg{book_id} a S3: {e}")
+            print(f"Error uploading book pg{book_id} to S3: {e}")
 
     def delete_all_books(self):
         try:
@@ -44,11 +44,11 @@ class S3Storage(BookStorage):
                     }
                 )
             else:
-                print(f"No se encontraron libros en la carpeta {self.folder_name}.")
+                print(f"No books found in the folder {self.folder_name}.")
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al eliminar libros de la carpeta {self.folder_name}: {e}")
+            print(f"Error deleting books from the folder {self.folder_name}: {e}")
 
     def upload_word_counts(self, word_counter):
         try:
@@ -60,14 +60,14 @@ class S3Storage(BookStorage):
                 ContentType="text/plain"
             )
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al subir el conteo de palabras a S3: {e}")
+            print(f"Error uploading word counts to S3: {e}")
 
     def delete_output_file(self):
         try:
             self.s3_client.delete_object(Bucket=self.bucket_name, Key=self.word_count_file)
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al eliminar el archivo {self.word_count_file} de S3: {e}")
+            print(f"Error deleting the file {self.word_count_file} from S3: {e}")

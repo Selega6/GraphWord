@@ -11,9 +11,6 @@ from controller import Controller
 app = FastAPI()
 
 def get_boto3_client(service_name):
-    """
-    Configura el cliente de boto3 para conectar con LocalStack usando la IP correcta.
-    """
     return boto3.client(
         service_name,
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID", "test"),
@@ -23,9 +20,6 @@ def get_boto3_client(service_name):
     )
 
 def listen_sqs_messages(controller, queue_url):
-    """
-    Escucha mensajes de SQS y actualiza el grafo cuando llega un mensaje.
-    """
     sqs = get_boto3_client("sqs")
     while True:
         try:
@@ -49,9 +43,6 @@ def listen_sqs_messages(controller, queue_url):
         time.sleep(5)
 
 def validate_graph_exists(bucket_name, file_key):
-    """
-    Valida que el archivo del grafo exista en el bucket de S3.
-    """
     s3_client = get_boto3_client("s3")
     try:
         s3_client.head_object(Bucket=bucket_name, Key=file_key)
@@ -63,16 +54,10 @@ def validate_graph_exists(bucket_name, file_key):
 
 @app.get("/health")
 def health_check():
-    """
-    Endpoint de verificación de estado.
-    """
     return {"status": "running"}
 
 @app.post("/reload-graph")
 def reload_graph():
-    """
-    Endpoint manual para recargar el grafo.
-    """
     try:
         controller.reload_graph_for_webservice()
         return {"message": "Graph reloaded successfully."}
@@ -80,26 +65,19 @@ def reload_graph():
         raise HTTPException(status_code=500, detail=f"Error reloading graph: {str(e)}")
 
 def main():
-    """
-    Función principal que inicia el controlador y escucha mensajes de SQS.
-    """
     bucket_name = os.getenv("BUCKET_NAME", "graphword-bucket")
     file_key = os.getenv("FILE_KEY", "graphs/graph.pkl")
     queue_url = os.getenv("QUEUE_URL", "http://172.20.0.2:4566/000000000000/graph-update-queue")
-    # Validar que el grafo existe
     validate_graph_exists(bucket_name, file_key)
 
-    # Inicializar el cargador de grafo
     graph_loader = S3GraphLoader(s3_bucket=bucket_name)
     global controller
     controller = Controller(graph_loader=graph_loader, graph_filename=file_key)
 
     controller.execute()
 
-    # Iniciar escucha de SQS en un hilo separado
     threading.Thread(target=listen_sqs_messages, args=(controller, queue_url), daemon=True).start()
 
-    # Ejecutar FastAPI
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080)
 

@@ -21,7 +21,7 @@ class WordProcessor:
             response = self.s3_client.list_objects_v2(Bucket=self.s3_bucket, Prefix=self.input_dir)
 
             if 'Contents' not in response:
-                print(f"No se encontraron archivos en '{self.s3_bucket}/{self.input_dir}'.")
+                print(f"No files found in '{self.s3_bucket}/{self.input_dir}'.")
                 return Counter()
 
             word_counter = Counter()
@@ -39,10 +39,10 @@ class WordProcessor:
             return word_counter
 
         except boto3.exceptions.Boto3Error as e:
-            print(f"Error al acceder a S3: {e}")
+            print(f"Error accessing S3: {e}")
             return Counter()
         except Exception as e:
-            print(f"Error inesperado al procesar archivos de S3: {e}")
+            print(f"Unexpected error processing files from S3: {e}")
             return Counter()
 
     def process_file_content(self, content):
@@ -57,5 +57,5 @@ class WordProcessor:
                 ]
                 word_counter.update(filtered_words)
         except Exception as e:
-            print(f"Error al procesar el contenido del archivo: {e}")
+            print(f"Error processing file content: {e}")
         return word_counter

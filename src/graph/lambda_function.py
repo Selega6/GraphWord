@@ -14,12 +14,12 @@ def lambda_handler(event, context):
     queue_url = os.getenv("SEND_QUEUE_URL")
     
     try:
-        print(f"Evento recibido: {json.dumps(event)}")
+        print(f"Received event: {json.dumps(event)}")
 
         if 'Records' not in event or not event['Records']:
             return {
                 'statusCode': 400,
-                'body': json.dumps("Error: No se encontraron registros en el evento.")
+                'body': json.dumps("Error: No records found in the event.")
             }
 
         for record in event['Records']:
@@ -64,16 +64,16 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
-            'body': json.dumps('Grafo generado y subido a S3 correctamente.')
+            'body': json.dumps('Graph generated and uploaded to S3 successfully.')
         }
 
     except ClientError as e:
         return {
             'statusCode': 500,
-            'body': json.dumps(f'Error de cliente S3/SQS: {e}')
+            'body': json.dumps(f'Client error S3/SQS: {e}')
         }
     except Exception as e:
         return {
             'statusCode': 500,
-            'body': json.dumps(f'Error general: {e}')
+            'body': json.dumps(f'General error: {e}')
         }
