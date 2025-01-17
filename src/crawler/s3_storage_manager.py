@@ -4,14 +4,16 @@ from storage_manager import BookStorage
 
 
 class S3Storage(BookStorage):
-    def __init__(self, bucket_name, region_name="us-east-1", folder_name="downloads", word_count_file="processed/word_counts.txt"):
+    def __init__(self, bucket_name, region_name="us-east-1", folder_name="downloads", word_count_folder="processed"):
         self.bucket_name = bucket_name
         self.s3_client = boto3.client("s3", region_name=region_name)
         self.folder_name = folder_name.rstrip('/')
-        self.word_count_file = word_count_file
+        self.word_count_folder = word_count_folder
+        self.word_count_file = f"{self.word_count_folder}/word_counts.txt"
 
-    def upload_book(self, book_id, content):
-        key = f"{self.folder_name}/pg{book_id}.txt"
+
+    def upload_book(self, book_id, content, count):
+        key = f"{self.folder_name}/pg{count}.txt"
         try:
             self.s3_client.put_object(
                 Bucket=self.bucket_name,
@@ -20,9 +22,9 @@ class S3Storage(BookStorage):
                 ContentType="text/plain"
             )
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al subir el libro pg{book_id} a S3: {e}")
+            print(f"Error uploading book pg{book_id} to S3: {e}")
 
     def delete_all_books(self):
         try:
@@ -42,11 +44,11 @@ class S3Storage(BookStorage):
                     }
                 )
             else:
-                print(f"No se encontraron libros en la carpeta {self.folder_name}.")
+                print(f"No books found in the folder {self.folder_name}.")
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al eliminar libros de la carpeta {self.folder_name}: {e}")
+            print(f"Error deleting books from the folder {self.folder_name}: {e}")
 
     def upload_word_counts(self, word_counter):
         try:
@@ -58,15 +60,14 @@ class S3Storage(BookStorage):
                 ContentType="text/plain"
             )
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al subir el conteo de palabras a S3: {e}")
+            print(f"Error uploading word counts to S3: {e}")
 
     def delete_output_file(self):
         try:
             self.s3_client.delete_object(Bucket=self.bucket_name, Key=self.word_count_file)
-            print(f"Archivo {self.word_count_file} eliminado de S3 exitosamente.")
         except NoCredentialsError:
-            print("No se encontraron credenciales de AWS. Verifica tu configuración.")
+            print("AWS credentials not found. Check your configuration.")
         except Exception as e:
-            print(f"Error al eliminar el archivo {self.word_count_file} de S3: {e}")
+            print(f"Error deleting the file {self.word_count_file} from S3: {e}")

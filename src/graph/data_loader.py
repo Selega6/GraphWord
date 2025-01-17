@@ -17,7 +17,12 @@ class DataLoader:
         words_with_counts = {}
         with open(self.file_path, "r") as file:
             for line in file:
-                word, count = line.strip().split()
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    word, count = parts
+                else:
+                    print(f"Invalid line: {line}")
+                    continue
                 words_with_counts[word] = int(count)
         return words_with_counts
 

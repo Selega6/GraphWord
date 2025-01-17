@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+networkx
+boto3
+pydantic
+httpx

@@ -1,9 +1,11 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import requests
 import random
 from bs4 import BeautifulSoup
-from crawler_base import Crawler
-from s3_storage_manager import S3Storage  
-from local_storage_manager import LocalBookStorage
+from crawler.crawler_base import Crawler
+
 
 class Gutenberg_crawler(Crawler):
     BASE_URL = "https://www.gutenberg.org/cache/epub/"
@@ -33,14 +35,14 @@ class Gutenberg_crawler(Crawler):
             print(f"Error checking language for book {book_id}: {e}")
         return False
 
-    def download_book(self, book_id):
+    def download_book(self, book_id, count):
         download_url = f"{self.BASE_URL}{book_id}/pg{book_id}.txt"
         try:
             if self.is_english(book_id):
                 response = requests.get(download_url, stream=True)
                 if response.status_code == 200:
                     if self.storage:
-                        self.storage.upload_book(book_id, response.content)
+                        self.storage.upload_book(book_id, response.content, count)
                     return True
         except Exception as e:
             print(f"Error downloading book {book_id}: {e}")
@@ -58,5 +60,5 @@ class Gutenberg_crawler(Crawler):
             
             attempted_books.add(book_id)
 
-            if self.download_book(book_id):
+            if self.download_book(book_id, downloaded_books):
                 downloaded_books += 1

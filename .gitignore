@@ -5,3 +5,8 @@
 # Directorios
 __pycache__/
 venv/
+# Ignorar archivos ZIP grandes
+deployment/aws/terraform/terraform.zip
+
+# Ignorar proveedores de Terraform descargados
+deployment/aws/terraform/.terraform/
