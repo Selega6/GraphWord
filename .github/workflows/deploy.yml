@@ -27,9 +27,7 @@ jobs:
             sudo mv terraform /usr/local/bin/
             pip install localstack-client awscli
             echo "alias tflocal='AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 terraform'" >> ~/.bashrc
-            echo "source ~/.bashrc" >> ~/.bash_profile
             source ~/.bashrc
-            source ~/.bash_profile
 
       - name: Run LocalStack in Docker
         run: |
